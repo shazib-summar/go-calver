@@ -63,7 +63,20 @@ func main() {
 
 ## Supported Formats
 
-The library supports all standard CalVer conventions:
+The library supports all standard CalVer conventions, organized into four levels
+that determine the order when comparing versions. Only one convention string may
+be used per level in the format string provided to `NewVersion` func.
+
+### Levels and Conventions
+
+| Level        | Description                  | Conventions                               | Example                  |
+| ------------ | ---------------------------- | ----------------------------------------- | ------------------------ |
+| **Major**    | Primary version identifier   | `<YYYY>`, `<YY>`, `<0Y>`, `<MAJOR>`       | `2025`, `25`, `05`, `12` |
+| **Minor**    | Secondary version identifier | `<MM>`, `<0M>`, `<MINOR>`                 | `7`, `07`, `14`          |
+| **Micro**    | Tertiary version identifier  | `<WW>`, `<0W>`, `<DD>`, `<0D>`, `<MICRO>` | `1`, `01`, `31`, `42`    |
+| **Modifier** | Additional version metadata  | `<MODIFIER>`                              | `alpha`, `beta`, `12:43` |
+
+### Convention Details
 
 | Convention   | Description                                | Example                  |
 | ------------ | ------------------------------------------ | ------------------------ |
