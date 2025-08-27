@@ -1,9 +1,9 @@
-package pkg_test
+package calver_test
 
 import (
 	"testing"
 
-	"github.com/shazib-summar/go-calver/pkg"
+	"github.com/shazib-summar/go-calver/calver"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -32,7 +32,7 @@ func TestNewCalVer(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			_, err := pkg.NewCalVer(test.format, test.version)
+			_, err := calver.NewCalVer(test.format, test.version)
 			if test.wantErr {
 				assert.Error(t, err)
 			} else {
@@ -56,12 +56,18 @@ func TestCalVerString(t *testing.T) {
 		{name: "5", format: "<0Y>.<0M>.<DD>", version: "18.04.6", want: "18.04.6"},
 		{name: "6", format: "<YYYY>-WW<DD>", version: "2025-WW14", want: "2025-WW14"},
 		{name: "7", format: "<YYYY>-WW<0D>", version: "2025-WW04", want: "2025-WW04"},
-		{name: "8", format: "RELEASE.<YYYY>-<0M>-<0D>T<MODIFIER>Z", version: "RELEASE.2025-07-23T15-54-02Z", want: "RELEASE.2025-07-23T15-54-02Z"},
+		{
+			name:    "8",
+			format:  "RELEASE.<YYYY>-<0M>-<0D>T<MODIFIER>Z",
+			version: "RELEASE.2025-07-23T15-54-02Z",
+			want:    "RELEASE.2025-07-23T15-54-02Z",
+		},
+		{name: "9", format: "<MAJOR>-WW<MINOR>", version: "2025-WW04", want: "2025-WW04"},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			calver, err := pkg.NewCalVer(test.format, test.version)
+			calver, err := calver.NewCalVer(test.format, test.version)
 			assert.NoError(t, err)
 			assert.Equal(t, test.want, calver.String())
 		})

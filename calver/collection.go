@@ -1,4 +1,4 @@
-package pkg
+package calver
 
 // Collection is a collection of CalVer objects. It implements the
 // sort.Interface interface.

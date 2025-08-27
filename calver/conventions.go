@@ -1,4 +1,4 @@
-package pkg
+package calver
 
 // ConventionsRegex is a map of conventions to their regex. The conventions are
 // taken the official docs at https://calver.org/#scheme
@@ -11,6 +11,7 @@ var ConventionsRegex = map[string]string{
 	"<YYYY>":     `(?P<major>\d{4})`,
 	"<YY>":       `(?P<major>\d{1,2})`,
 	"<0Y>":       `(?P<major>\d{2})`,
+	"<MAJOR>":    `(?P<major>\d+)`,
 	"<MM>":       `(?P<minor>\d{1,2})`,
 	"<0M>":       `(?P<minor>\d{2})`,
 	"<MINOR>":    `(?P<minor>\d+)`,
@@ -24,10 +25,15 @@ var ConventionsRegex = map[string]string{
 
 // ConventionPrecedence is the precedence of the conventions. The higher the
 // index, the higher the precedence.
+//
+// The precedence is used to determine the order of the identifiers when
+// comparing two versions. Note that all the identifiers are compared as
+// integers except for the modifier which is compared as a string.
 var ConventionPrecedence = []string{
 	"<YYYY>",
 	"<YY>",
 	"<0Y>",
+	"<MAJOR>",
 	"<MM>",
 	"<0M>",
 	"<MINOR>",

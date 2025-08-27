@@ -1,10 +1,10 @@
-package pkg_test
+package calver_test
 
 import (
 	"sort"
 	"testing"
 
-	"github.com/shazib-summar/go-calver/pkg"
+	"github.com/shazib-summar/go-calver/calver"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -51,11 +51,17 @@ func TestNewCollection(t *testing.T) {
 			},
 			wantErr: false,
 		},
+		{
+			name:     "6",
+			format:   "<YYYY><MM><DD>",
+			versions: []string{"20250723", "20250724", "20250725", "20250726", "20250727"},
+			wantErr:  false,
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			collection, err := pkg.NewCollection(tt.format, tt.versions...)
+			collection, err := calver.NewCollection(tt.format, tt.versions...)
 			if tt.wantErr {
 				assert.Error(t, err)
 			} else {
@@ -97,11 +103,23 @@ func TestSortCollection(t *testing.T) {
 			versions: []string{"25-07-18", "25-07-21", "25-07-16", "25-07-15", "25-07-14"},
 			want:     []string{"25-07-14", "25-07-15", "25-07-16", "25-07-18", "25-07-21"},
 		},
+		{
+			name:     "5",
+			format:   "<YYYY>-Rel<MINOR>/<MICRO>",
+			versions: []string{"2025-Rel07/14", "2025-Rel07/15", "2025-Rel07/16", "2025-Rel07/17", "2025-Rel07/18"},
+			want:     []string{"2025-Rel07/14", "2025-Rel07/15", "2025-Rel07/16", "2025-Rel07/17", "2025-Rel07/18"},
+		},
+		{
+			name:     "6",
+			format:   "<YYYY><MM><DD>",
+			versions: []string{"20240811", "20240711", "20250711", "20251130", "20250826"},
+			want:     []string{"20240711", "20240811", "20250711", "20250826", "20251130"},
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			collection, err := pkg.NewCollection(tt.format, tt.versions...)
+			collection, err := calver.NewCollection(tt.format, tt.versions...)
 			assert.NoError(t, err)
 			sort.Sort(collection)
 			for i, v := range collection {
