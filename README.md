@@ -202,8 +202,3 @@ This project is licensed under the Apache License 2.0 - see the
 - [CalVer.org](https://calver.org/) for the Calendar Versioning specification
 - The Go community for best practices and testing patterns
 - My playful niece Abigail without whom this would've been done much sooner.
-
-## Related Projects
-
-- [SemVer](https://semver.org/) - Semantic Versioning specification
-- [Go modules](https://golang.org/ref/mod) - Go's dependency management system
