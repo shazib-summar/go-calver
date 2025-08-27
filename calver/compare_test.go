@@ -1,9 +1,9 @@
-package pkg_test
+package calver_test
 
 import (
 	"testing"
 
-	"github.com/shazib-summar/go-calver/pkg"
+	"github.com/shazib-summar/go-calver/calver"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -107,13 +107,27 @@ func TestCompare(t *testing.T) {
 			other:   "RELEASE.2025-07-23T15-54-02Z",
 			want:    -1,
 		},
+		{
+			name:    "14",
+			format:  "<MAJOR>-<MINOR>-<MICRO>T<MODIFIER>Z",
+			version: "2025-07-23T14-54-02Z",
+			other:   "2025-07-23T15-54-02Z",
+			want:    -1,
+		},
+		{
+			name:    "15",
+			format:  "<YYYY><MM><DD>",
+			version: "20260723",
+			other:   "20250724",
+			want:    1,
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			version, err := pkg.NewCalVer(tt.format, tt.version)
+			version, err := calver.NewCalVer(tt.format, tt.version)
 			assert.NoError(t, err)
-			other, err := pkg.NewCalVer(tt.format, tt.other)
+			other, err := calver.NewCalVer(tt.format, tt.other)
 			assert.NoError(t, err)
 			got, err := version.Compare(other)
 			assert.NoError(t, err)

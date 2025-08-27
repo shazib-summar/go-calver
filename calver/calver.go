@@ -1,4 +1,4 @@
-package pkg
+package calver
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// CalVer is a CalVer object. What else would you expect?
+// CalVer is a CalVer object.
 type CalVer struct {
 	format   string
 	major    string
@@ -107,7 +107,7 @@ func (c *CalVer) String() string {
 	for _, con := range ConventionPrecedence {
 		if strings.Contains(out, con) {
 			switch con {
-			case "<YYYY>", "<YY>", "<0Y>":
+			case "<YYYY>", "<YY>", "<0Y>", "<MAJOR>":
 				out = strings.ReplaceAll(out, con, c.major)
 			case "<MM>", "<0M>", "<MINOR>":
 				out = strings.ReplaceAll(out, con, c.minor)

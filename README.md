@@ -36,28 +36,29 @@ go get github.com/shazib-summar/go-calver
 package main
 
 import (
-    "fmt"
-    "log"
+	"fmt"
+	"log"
 
-    "github.com/shazib-summar/go-calver"
+	"github.com/shazib-summar/go-calver/calver"
 )
 
 func main() {
-    format := "Rel-<YYYY>-<0M>-<0D>"
-    // Create a new CalVer object
-    calver, err := calver.NewCalVer(format, "Rel-2025-07-14")
-    if err != nil {
-        log.Fatal(err)
-    }
+	format := "Rel-<YYYY>-<0M>-<0D>"
+	// Create a new CalVer object
+	ver, err := calver.NewCalVer(format, "Rel-2025-07-14")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-    // Print the version
-    fmt.Println(calver.String()) // Output: Rel-2025-07-14
+	// Print the version
+	fmt.Println(ver.String()) // Output: Rel-2025-07-14
 
-    // Compare with another version
-    other, _ := calver.NewCalVer(format, "Rel-2025-07-15")
-    result, _ := calver.Compare(other)
-    fmt.Printf("Comparison result: %d\n", result) // Output: -1 (less than)
+	// Compare with another version
+	other, _ := calver.NewCalVer(format, "Rel-2025-07-15")
+	result, _ := ver.Compare(other)
+	fmt.Printf("Comparison result: %d\n", result) // Output: -1 (less than)
 }
+
 ```
 
 ## Supported Formats
@@ -69,6 +70,7 @@ The library supports all standard CalVer conventions:
 | `<YYYY>`     | 4-digit year                               | `2025`                   |
 | `<YY>`       | 1-2 digit year                             | `25`                     |
 | `<0Y>`       | 2-digit year (zero-padded)                 | `05`                     |
+| `<MAJOR>`    | The "major" part                           | `12, 02, 123`            |
 | `<MM>`       | 1-2 digit month                            | `7` or `12`              |
 | `<0M>`       | 2-digit month (zero-padded)                | `07` or `12`             |
 | `<MINOR>`    | Minor version number                       | `14`                     |
@@ -80,6 +82,8 @@ The library supports all standard CalVer conventions:
 | `<MODIFIER>` | Modifier string or additional version part | `alpha`, `beta`, `12:43` |
 
 ## Usage Examples
+
+Complete examples files can be found in the [examples](examples) dir
 
 ### Basic Version Creation
 
