@@ -1,6 +1,6 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/shazib-summar/go-calver.svg)](https://pkg.go.dev/github.com/shazib-summar/go-calver)
 [![Go Report Card](https://goreportcard.com/badge/github.com/shazib-summar/go-calver)](https://goreportcard.com/report/github.com/shazib-summar/go-calver)
-[![Tests Status](https://github.com/shazib-summar/go-calver/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/shazib-summar/go-calver/actions)
+[![Tests Status](https://github.com/shazib-summar/go-calver/actions/workflows/codestyle.yml/badge.svg?branch=main)](https://github.com/shazib-summar/go-calver/actions)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
 
 # go-calver
