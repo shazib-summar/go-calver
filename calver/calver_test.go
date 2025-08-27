@@ -64,6 +64,7 @@ func TestCalVerString(t *testing.T) {
 			want:    "RELEASE.2025-07-23T15-54-02Z",
 		},
 		{name: "9", format: "<MAJOR>-WW<MINOR>", version: "2025-WW04", want: "2025-WW04"},
+		{name: "10", format: "<MAJOR>-<YYY>-<MICRO>", version: "2025-<YYY>-12", want: "2025-<YYY>-12"},
 	}
 
 	for _, test := range tests {
