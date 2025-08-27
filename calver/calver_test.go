@@ -75,3 +75,34 @@ func TestCalVerString(t *testing.T) {
 		})
 	}
 }
+
+func TestCalVerSeries(t *testing.T) {
+	tests := []struct {
+		name    string
+		format  string
+		version string
+		level   string
+		want    string
+	}{
+		{name: "1", format: "<YYYY>-R<DD>", version: "2025-R1", level: "major", want: "2025"},
+		{name: "2", format: "<YYYY>-R<DD>", version: "2025-R1", level: "minor", want: "2025-R1"},
+		{name: "3", format: "<YYYY>-R<DD>", version: "2025-R1", level: "micro", want: "2025-R1"},
+		{name: "4", format: "<YYYY>-R<DD>", version: "2025-R1", level: "modifier", want: "2025-R1"},
+		{name: "5", format: "<YYYY>-R<DD>", version: "2025-R1", level: "", want: "2025-R1"},
+		{name: "6", format: "<YYYY>-R<DD>", version: "2025-R1", level: "invalid", want: "2025-R1"},
+		{name: "7", format: "<YYYY>-<MM>-<DD>", version: "2025-07-14", level: "major", want: "2025"},
+		{name: "8", format: "<YYYY>-<MM>-<DD>", version: "2025-07-14", level: "minor", want: "2025-07"},
+		{name: "9", format: "<YYYY>-<MM>-<DD>", version: "2025-07-14", level: "micro", want: "2025-07-14"},
+		{name: "10", format: "<YYYY>-<MM>-<DD>", version: "2025-07-14", level: "modifier", want: "2025-07-14"},
+		{name: "11", format: "<YYYY>-<MM>-<DD>", version: "2025-07-14", level: "", want: "2025-07-14"},
+		{name: "12", format: "<YYYY>-<MM>-<DD>", version: "2025-07-14", level: "invalid", want: "2025-07-14"},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			calver, err := calver.NewCalVer(test.format, test.version)
+			assert.NoError(t, err)
+			assert.Equal(t, test.want, calver.Series(test.level))
+		})
+	}
+}

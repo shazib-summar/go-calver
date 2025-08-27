@@ -19,6 +19,9 @@ for projects that release frequently or on a schedule.
 - **Comparison Operations**: Compare CalVer versions with proper precedence
   handling
 - **Collections**: Sort and manage collections of CalVer objects
+- **Version Incrementing**: Increment major, minor, micro, and modifier versions
+  while preserving zero-padding
+- **Series Management**: Extract version series at different levels (major, minor, micro, modifier)
 - **Zero Dependencies**: Pure Go implementation with no external dependencies
 - **Comprehensive Testing**: Extensive test coverage for all functionality
 - **Unlimited Format Support**: Supports any format string since users control
@@ -162,6 +165,50 @@ sort.Sort(collection)
 for _, v := range collection {
     fmt.Println(v.String())
 }
+```
+
+### Version Incrementing
+
+```go
+// Create a version
+ver, err := calver.NewCalVer("<YYYY>.<0M>.<0D>", "2025.07.14")
+if err != nil {
+    log.Fatal(err)
+}
+
+// Increment different parts
+err = ver.IncMajor()   // 2025 -> 2026
+err = ver.IncMinor()   // 07 -> 08
+err = ver.IncMicro()   // 14 -> 15
+
+fmt.Println(ver.String()) // Output: 2026.08.15
+
+// Zero-padding is preserved
+ver, _ = calver.NewCalVer("<YYYY>.<0M>.<0D>", "2025.01.09")
+err = ver.IncMinor()   // 01 -> 02 (preserves zero-padding)
+err = ver.IncMicro()   // 09 -> 10 (loses zero-padding)
+
+fmt.Println(ver.String()) // Output: 2025.02.10
+```
+
+### Series Management
+
+```go
+ver, err := calver.NewCalVer("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-14")
+if err != nil {
+    log.Fatal(err)
+}
+
+// Get series at different levels
+fmt.Println(ver.Series("major"))   // Output: Rel-2025
+fmt.Println(ver.Series("minor"))   // Output: Rel-2025-07
+fmt.Println(ver.Series("micro"))   // Output: Rel-2025-07-14
+fmt.Println(ver.Series("modifier")) // Output: Rel-2025-07-14
+fmt.Println(ver.Series(""))        // Output: Rel-2025-07-14 (full version)
+
+// Useful for grouping related versions
+majorSeries := ver.Series("major")   // "Rel-2025"
+minorSeries := ver.Series("minor")   // "Rel-2025-07"
 ```
 
 ### Custom Format with Modifiers

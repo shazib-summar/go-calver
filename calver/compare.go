@@ -26,14 +26,14 @@ import (
 // The major, minor and micro are compared as integers. The modifier is compared
 // as a string.
 func (c *CalVer) Compare(other *CalVer) (int, error) {
-	if c.format != other.format {
-		return 0, fmt.Errorf("formats do not match: %s and %s", c.format, other.format)
+	if c.Format != other.Format {
+		return 0, fmt.Errorf("formats do not match: %s and %s", c.Format, other.Format)
 	}
 
-	if c.major != "" && other.major != "" {
-		if c.major != other.major {
-			majorCurrent, _ := strconv.Atoi(c.major)
-			majorOther, _ := strconv.Atoi(other.major)
+	if c.Major != "" && other.Major != "" {
+		if c.Major != other.Major {
+			majorCurrent, _ := strconv.Atoi(c.Major)
+			majorOther, _ := strconv.Atoi(other.Major)
 			if majorCurrent == majorOther {
 				return 0, nil
 			}
@@ -44,10 +44,10 @@ func (c *CalVer) Compare(other *CalVer) (int, error) {
 		}
 	}
 
-	if c.minor != "" && other.minor != "" {
-		if c.minor != other.minor {
-			minorCurrent, _ := strconv.Atoi(c.minor)
-			minorOther, _ := strconv.Atoi(other.minor)
+	if c.Minor != "" && other.Minor != "" {
+		if c.Minor != other.Minor {
+			minorCurrent, _ := strconv.Atoi(c.Minor)
+			minorOther, _ := strconv.Atoi(other.Minor)
 			if minorCurrent == minorOther {
 				return 0, nil
 			}
@@ -58,10 +58,10 @@ func (c *CalVer) Compare(other *CalVer) (int, error) {
 		}
 	}
 
-	if c.micro != "" && other.micro != "" {
-		if c.micro != other.micro {
-			microCurrent, _ := strconv.Atoi(c.micro)
-			microOther, _ := strconv.Atoi(other.micro)
+	if c.Micro != "" && other.Micro != "" {
+		if c.Micro != other.Micro {
+			microCurrent, _ := strconv.Atoi(c.Micro)
+			microOther, _ := strconv.Atoi(other.Micro)
 			if microCurrent == microOther {
 				return 0, nil
 			}
@@ -72,8 +72,8 @@ func (c *CalVer) Compare(other *CalVer) (int, error) {
 		}
 	}
 
-	if c.modifier != "" && other.modifier != "" {
-		return strings.Compare(c.modifier, other.modifier), nil
+	if c.Modifier != "" && other.Modifier != "" {
+		return strings.Compare(c.Modifier, other.Modifier), nil
 	}
 
 	return 0, nil
