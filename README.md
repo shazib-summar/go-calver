@@ -26,8 +26,8 @@ for projects that release frequently or on a schedule.
 - **Collections**: Sort and manage collections of CalVer objects
 - **Version Incrementing**: Increment major, minor, micro, and modifier versions
   while preserving zero-padding
-- **Series Management**: Extract version series at different levels (major, minor, micro, modifier)
-- **Zero Dependencies**: Pure Go implementation with no external dependencies
+- **Series Management**: Extract version series at different levels (major,
+  minor, micro, modifier)
 - **Comprehensive Testing**: Extensive test coverage for all functionality
 - **Unlimited Format Support**: Supports any format string since users control
   the format - the only requirement is to use the CalVer conventions correctly
@@ -66,7 +66,6 @@ func main() {
 	result, _ := ver.Compare(other)
 	fmt.Printf("Comparison result: %d\n", result) // Output: -1 (less than)
 }
-
 ```
 
 ## Supported Formats
@@ -205,15 +204,15 @@ if err != nil {
 }
 
 // Get series at different levels
-fmt.Println(ver.Series("major"))   // Output: Rel-2025
-fmt.Println(ver.Series("minor"))   // Output: Rel-2025-07
-fmt.Println(ver.Series("micro"))   // Output: Rel-2025-07-14
+fmt.Println(ver.Series("major"))    // Output: Rel-2025
+fmt.Println(ver.Series("minor"))    // Output: Rel-2025-07
+fmt.Println(ver.Series("micro"))    // Output: Rel-2025-07-14
 fmt.Println(ver.Series("modifier")) // Output: Rel-2025-07-14
-fmt.Println(ver.Series(""))        // Output: Rel-2025-07-14 (full version)
+fmt.Println(ver.Series(""))         // Output: Rel-2025-07-14 (full version)
 
 // Useful for grouping related versions
-majorSeries := ver.Series("major")   // "Rel-2025"
-minorSeries := ver.Series("minor")   // "Rel-2025-07"
+majorSeries := ver.Series("major") // "Rel-2025"
+minorSeries := ver.Series("minor") // "Rel-2025-07"
 ```
 
 ### Custom Format with Modifiers
