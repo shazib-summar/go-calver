@@ -28,6 +28,7 @@ func TestNewCalVer(t *testing.T) {
 		{name: "12", format: "<YYYY>-WW<0D>", version: "2025-WW04", wantErr: false},
 		{name: "13", format: "<YYYY>-<MINOR>", version: "2025-14", wantErr: false},
 		{name: "14", format: "<YYYY>-<MICRO>", version: "2025-14-12", wantErr: true},
+		{name: "15", format: "<MAJOR>-<MINOR>-<MICRO>", version: "2025-14-12", wantErr: false},
 	}
 
 	for _, test := range tests {
