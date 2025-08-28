@@ -6,7 +6,7 @@ import (
 	"github.com/shazib-summar/go-calver/calver"
 )
 
-func ex_newcalver() {
+func ex_newversion() {
 	entries := []map[string]string{
 		{
 			"format":  "Rel-<YYYY>-<0M>-<0D>",
@@ -31,7 +31,7 @@ func ex_newcalver() {
 	}
 
 	for _, entry := range entries {
-		ver, err := calver.NewCalVer(entry["format"], entry["version"])
+		ver, err := calver.NewVersion(entry["format"], entry["version"])
 		if err != nil {
 			panic(err)
 		}

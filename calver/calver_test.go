@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewCalVer(t *testing.T) {
+func TestNewVersion(t *testing.T) {
 	tests := []struct {
 		name    string
 		format  string
@@ -35,7 +35,7 @@ func TestNewCalVer(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			_, err := calver.NewCalVer(test.format, test.version)
+			_, err := calver.NewVersion(test.format, test.version)
 			if test.wantErr {
 				assert.Error(t, err)
 			} else {
@@ -45,7 +45,7 @@ func TestNewCalVer(t *testing.T) {
 	}
 }
 
-func TestCalVerString(t *testing.T) {
+func TestVersionString(t *testing.T) {
 	tests := []struct {
 		name    string
 		format  string
@@ -77,14 +77,14 @@ func TestCalVerString(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			calver, err := calver.NewCalVer(test.format, test.version)
+			calver, err := calver.NewVersion(test.format, test.version)
 			assert.NoError(t, err)
 			assert.Equal(t, test.want, calver.String())
 		})
 	}
 }
 
-func TestCalVerSeries(t *testing.T) {
+func TestVersionSeries(t *testing.T) {
 	tests := []struct {
 		name    string
 		format  string
@@ -108,7 +108,7 @@ func TestCalVerSeries(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			calver, err := calver.NewCalVer(test.format, test.version)
+			calver, err := calver.NewVersion(test.format, test.version)
 			assert.NoError(t, err)
 			assert.Equal(t, test.want, calver.Series(test.level))
 		})

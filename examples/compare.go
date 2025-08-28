@@ -11,12 +11,12 @@ func ex_compare() {
 	versionA := "2025-Rel07/14"
 	versionB := "2025-Rel07/15"
 
-	verA, err := calver.NewCalVer(format, versionA)
+	verA, err := calver.NewVersion(format, versionA)
 	if err != nil {
 		panic(err)
 	}
 
-	verB, err := calver.NewCalVer(format, versionB)
+	verB, err := calver.NewVersion(format, versionB)
 	if err != nil {
 		panic(err)
 	}

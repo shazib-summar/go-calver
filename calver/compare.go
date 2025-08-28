@@ -12,20 +12,20 @@ import (
 //
 // Example:
 //
-//	calver1, err := NewCalVer("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-14")
+//	ver1, err := calver.NewVersion("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-14")
 //	if err != nil {
 //	    return err
 //	}
-//	calver2, err := NewCalVer("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-15")
+//	ver2, err := calver.NewVersion("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-15")
 //	if err != nil {
 //	    return err
 //	}
-//	fmt.Printf("%d\n", calver1.Compare(calver2)) // -1
+//	fmt.Printf("%d\n", ver1.Compare(ver2)) // -1
 //
 // The comparison is done in the following order: major, minor, micro, modifier.
 // The major, minor and micro are compared as integers. The modifier is compared
 // as a string.
-func (c *CalVer) Compare(other *CalVer) (int, error) {
+func (c *Version) Compare(other *Version) (int, error) {
 	if c.Format != other.Format {
 		return 0, fmt.Errorf("formats do not match: %s and %s", c.Format, other.Format)
 	}
@@ -100,19 +100,19 @@ func (c *CalVer) Compare(other *CalVer) (int, error) {
 //
 // Example:
 //
-//	calver1, err := NewCalVer("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-14")
+//	ver1, err := calver.NewVersion("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-14")
 //	if err != nil {
 //	    return err
 //	}
-//	calver2, err := NewCalVer("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-15")
+//	ver2, err := calver.NewVersion("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-15")
 //	if err != nil {
 //	    return err
 //	}
-//	fmt.Printf("%d\n", calver1.CompareOrPanic(calver2)) // -1
+//	fmt.Printf("%d\n", ver1.CompareOrPanic(ver2)) // -1
 //
 // This is useful when you are sure the comparison will succeed and do not want
 // an error return.
-func (c *CalVer) CompareOrPanic(other *CalVer) int {
+func (c *Version) CompareOrPanic(other *Version) int {
 	compare, err := c.Compare(other)
 	if err != nil {
 		panic(err)

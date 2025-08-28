@@ -52,8 +52,8 @@ import (
 
 func main() {
 	format := "Rel-<YYYY>-<0M>-<0D>"
-	// Create a new CalVer object
-	ver, err := calver.NewCalVer(format, "Rel-2025-07-14")
+	// Create a new Version object
+	ver, err := calver.NewVersion(format, "Rel-2025-07-14")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -62,7 +62,7 @@ func main() {
 	fmt.Println(ver.String()) // Output: Rel-2025-07-14
 
 	// Compare with another version
-	other, _ := calver.NewCalVer(format, "Rel-2025-07-15")
+	other, _ := calver.NewVersion(format, "Rel-2025-07-15")
 	result, _ := ver.Compare(other)
 	fmt.Printf("Comparison result: %d\n", result) // Output: -1 (less than)
 }
@@ -109,19 +109,19 @@ Complete examples files can be found in the [examples](examples) dir
 
 ```go
 // Year-Month-Day format
-calver, err := calver.NewCalVer("<YYYY>-<MM>-<DD>", "2025-07-14")
+ver, err := calver.NewVersion("<YYYY>-<MM>-<DD>", "2025-07-14")
 if err != nil {
     log.Fatal(err)
 }
 
 // Year.Release format
-calver, err = calver.NewCalVer("<YYYY>.R<DD>", "2025.R14")
+ver, err = calver.NewVersion("<YYYY>.R<DD>", "2025.R14")
 if err != nil {
     log.Fatal(err)
 }
 
 // Ubuntu-style format
-calver, err = calver.NewCalVer("<0Y>.<0M>.<DD>", "22.04.6")
+ver, err = calver.NewVersion("<0Y>.<0M>.<DD>", "22.04.6")
 if err != nil {
     log.Fatal(err)
 }
@@ -130,21 +130,21 @@ if err != nil {
 ### Version Comparison
 
 ```go
-calver1, _ := calver.NewCalVer("<YYYY>-<MM>-<DD>", "2025-07-14")
-calver2, _ := calver.NewCalVer("<YYYY>-<MM>-<DD>", "2025-07-15")
+verA, _ := calver.NewVersion("<YYYY>-<MM>-<DD>", "2025-07-14")
+verB, _ := calver.NewVersion("<YYYY>-<MM>-<DD>", "2025-07-15")
 
-result, err := calver1.Compare(calver2)
+result, err := verA.Compare(verB)
 if err != nil {
     log.Fatal(err)
 }
 
 switch result {
 case -1:
-    fmt.Println("calver1 is older than calver2")
+    fmt.Println("verA is older than verB")
 case 0:
-    fmt.Println("calver1 equals calver2")
+    fmt.Println("verA equals verB")
 case 1:
-    fmt.Println("calver1 is newer than calver2")
+    fmt.Println("verA is newer than verB")
 }
 ```
 
@@ -175,7 +175,7 @@ for _, v := range collection {
 
 ```go
 // Create a version
-ver, err := calver.NewCalVer("<YYYY>.<0M>.<0D>", "2025.07.14")
+ver, err := calver.NewVersion("<YYYY>.<0M>.<0D>", "2025.07.14")
 if err != nil {
     log.Fatal(err)
 }
@@ -188,7 +188,7 @@ err = ver.IncMicro()   // 14 -> 15
 fmt.Println(ver.String()) // Output: 2026.08.15
 
 // Zero-padding is preserved
-ver, _ = calver.NewCalVer("<YYYY>.<0M>.<0D>", "2025.01.09")
+ver, _ = calver.NewVersion("<YYYY>.<0M>.<0D>", "2025.01.09")
 err = ver.IncMinor()   // 01 -> 02 (preserves zero-padding)
 err = ver.IncMicro()   // 09 -> 10 (loses zero-padding)
 
@@ -198,7 +198,7 @@ fmt.Println(ver.String()) // Output: 2025.02.10
 ### Series Management
 
 ```go
-ver, err := calver.NewCalVer("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-14")
+ver, err := calver.NewVersion("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-14")
 if err != nil {
     log.Fatal(err)
 }
@@ -222,12 +222,12 @@ minorSeries := ver.Series("minor") // "Rel-2025-07"
 format := "RELEASE.<YYYY>-<0M>-<0D>T<MODIFIER>Z"
 version := "RELEASE.2025-07-23T15-54-02Z"
 
-calver, err := calver.NewCalVer(format, version)
+ver, err := calver.NewVersion(format, version)
 if err != nil {
     log.Fatal(err)
 }
 
-fmt.Println(calver.String()) // Output: RELEASE.2025-07-23T15-54-02Z
+fmt.Println(ver.String()) // Output: RELEASE.2025-07-23T15-54-02Z
 ```
 
 ## Testing
