@@ -85,21 +85,21 @@ be used per level in the format string provided to `NewVersion` func.
 
 ### Convention Details
 
-| Convention   | Description                                | Example                  |
-| ------------ | ------------------------------------------ | ------------------------ |
-| `<YYYY>`     | 4-digit year                               | `2025`                   |
-| `<YY>`       | 1-2 digit year                             | `25`                     |
-| `<0Y>`       | 2-digit year (zero-padded)                 | `05`                     |
-| `<MAJOR>`    | The "major" part                           | `12, 02, 123`            |
-| `<MM>`       | 1-2 digit month                            | `7` or `12`              |
-| `<0M>`       | 2-digit month (zero-padded)                | `07` or `12`             |
-| `<MINOR>`    | Minor version number                       | `14`                     |
-| `<WW>`       | 1-2 digit week                             | `1` or `52`              |
-| `<0W>`       | 2-digit week (zero-padded)                 | `01` or `52`             |
-| `<DD>`       | 1-2 digit day                              | `1` or `31`              |
-| `<0D>`       | 2-digit day (zero-padded)                  | `01` or `31`             |
-| `<MICRO>`    | Micro version number                       | `42`                     |
-| `<MODIFIER>` | Modifier string or additional version part | `alpha`, `beta`, `12:43` |
+| Convention   | Description                                | Regex                |
+| ------------ | ------------------------------------------ | -------------------- |
+| `<YYYY>`     | 4-digit year                               | `(?P<major>\d{4})`   |
+| `<YY>`       | 1-2 digit year                             | `(?P<major>\d{1,2})` |
+| `<0Y>`       | 2-digit year (zero-padded)                 | `(?P<major>\d{2})`   |
+| `<MAJOR>`    | Major version number                       | `(?P<major>\d+)`     |
+| `<MM>`       | 1-2 digit month                            | `(?P<minor>\d{1,2})` |
+| `<0M>`       | 2-digit month (zero-padded)                | `(?P<minor>\d{2})`   |
+| `<MINOR>`    | Minor version number                       | `(?P<minor>\d+)`     |
+| `<WW>`       | 1-2 digit week                             | `(?P<micro>\d{1,2})` |
+| `<0W>`       | 2-digit week (zero-padded)                 | `(?P<micro>\d{2})`   |
+| `<DD>`       | 1-2 digit day                              | `(?P<micro>\d{1,2})` |
+| `<0D>`       | 2-digit day (zero-padded)                  | `(?P<micro>\d{2})`   |
+| `<MICRO>`    | Micro version number                       | `(?P<micro>\d+)`     |
+| `<MODIFIER>` | Modifier string or additional version part | `(?P<modifier>.*)`   |
 
 ## Usage Examples
 
