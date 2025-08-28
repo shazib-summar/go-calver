@@ -121,6 +121,27 @@ func TestCompare(t *testing.T) {
 			other:   "20250724",
 			want:    1,
 		},
+		{
+			name:    "16",
+			format:  "<YYYY><MM><DD>-alpha.<MODIFIER>",
+			version: "20250724-alpha.2",
+			other:   "20250724-alpha.1",
+			want:    1,
+		},
+		{
+			name:    "17",
+			format:  "<YYYY><MM><DD>-eksbuild.<MODIFIER>",
+			version: "20250724-eksbuild.16002300",
+			other:   "20250724-eksbuild.16004300",
+			want:    -1,
+		},
+		{
+			name:    "18",
+			format:  "<YYYY><MM><DD>-foobar.<MODIFIER>",
+			version: "20250724-foobar.alpha",
+			other:   "20250724-foobar.beta",
+			want:    -1,
+		},
 	}
 
 	for _, tt := range tests {
