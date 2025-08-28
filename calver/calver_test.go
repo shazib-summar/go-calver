@@ -29,6 +29,8 @@ func TestNewCalVer(t *testing.T) {
 		{name: "13", format: "<YYYY>-<MINOR>", version: "2025-14", wantErr: false},
 		{name: "14", format: "<YYYY>-<MICRO>", version: "2025-14-12", wantErr: true},
 		{name: "15", format: "<MAJOR>-<MINOR>-<MICRO>", version: "2025-14-12", wantErr: false},
+		{name: "16", format: "v<MAJOR>-<MINOR>-<MICRO>", version: "v2025-14-12", wantErr: false},
+		{name: "16", format: "v<MAJOR>-<MINOR>-<MICRO>", version: "2025-14-12", wantErr: true},
 	}
 
 	for _, test := range tests {
@@ -65,6 +67,12 @@ func TestCalVerString(t *testing.T) {
 		},
 		{name: "9", format: "<MAJOR>-WW<MINOR>", version: "2025-WW04", want: "2025-WW04"},
 		{name: "10", format: "<MAJOR>-<YYY>-<MICRO>", version: "2025-<YYY>-12", want: "2025-<YYY>-12"},
+		{
+			name:    "11",
+			format:  "v<YYYY><0M><0D>",
+			version: "v20250723",
+			want:    "v20250723",
+		},
 	}
 
 	for _, test := range tests {
@@ -95,7 +103,7 @@ func TestCalVerSeries(t *testing.T) {
 		{name: "9", format: "<YYYY>-<MM>-<DD>", version: "2025-07-14", level: "micro", want: "2025-07-14"},
 		{name: "10", format: "<YYYY>-<MM>-<DD>", version: "2025-07-14", level: "modifier", want: "2025-07-14"},
 		{name: "11", format: "<YYYY>-<MM>-<DD>", version: "2025-07-14", level: "", want: "2025-07-14"},
-		{name: "12", format: "<YYYY>-<MM>-<DD>", version: "2025-07-14", level: "invalid", want: "2025-07-14"},
+		{name: "12", format: "v<YYYY>-<MM>-<DD>", version: "v2025-07-14", level: "invalid", want: "v2025-07-14"},
 	}
 
 	for _, test := range tests {
