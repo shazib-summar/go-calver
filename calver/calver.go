@@ -9,9 +9,9 @@ import (
 	"github.com/shazib-summar/go-calver/internal"
 )
 
-// CalVer is a CalVer object. To get the string representation of the version,
+// Version is a Version object. To get the string representation of the version,
 // use the String method.
-type CalVer struct {
+type Version struct {
 	// Format is the original format string.
 	Format string
 	// Major is the major version.
@@ -24,18 +24,18 @@ type CalVer struct {
 	Modifier string
 }
 
-// NewCalVer creates a new CalVer object from a format string and a version. The
-// format string is expected to follow the conventions defined in
+// NewVersion creates a new Version object from a format string and a version.
+// The format string is expected to follow the conventions defined in
 // ConventionsRegex.
 //
 // Example:
 //
-//	ver, err := NewCalVer("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-14")
+//	ver, err := NewVersion("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-14")
 //	if err != nil {
-//		return err
+//	    return err
 //	}
 //	fmt.Println(ver.String()) // Rel-2025-07-14
-func NewCalVer(format string, version string) (*CalVer, error) {
+func NewVersion(format string, version string) (*Version, error) {
 	if !internal.ValidateFormat(format) {
 		return nil, fmt.Errorf("invalid format: %s", format)
 	}
@@ -57,7 +57,7 @@ func NewCalVer(format string, version string) (*CalVer, error) {
 		)
 	}
 
-	c := &CalVer{
+	c := &Version{
 		Format: originalFormat,
 	}
 	for i, lv := range re.SubexpNames() {
@@ -86,17 +86,17 @@ func NewCalVer(format string, version string) (*CalVer, error) {
 	return c, nil
 }
 
-// String returns the CalVer object as a string. The string will be in the
+// String returns the Version object as a string. The string will be in the
 // format of the original format string.
 //
 // Example:
 //
-//	calver, err := NewCalVer("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-14")
+//	ver, err := NewVersion("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-14")
 //	if err != nil {
-//		return err
+//	    return err
 //	}
-//	fmt.Println(calver.String()) // Rel-2025-07-14
-func (c *CalVer) String() string {
+//	fmt.Println(ver.String()) // Rel-2025-07-14
+func (c *Version) String() string {
 	out := c.Format
 	versionParts := []string{c.Major, c.Minor, c.Micro, c.Modifier}
 	for i, lv := range internal.ValidLevels {
@@ -110,34 +110,34 @@ func (c *CalVer) String() string {
 }
 
 // GetMajor returns the major version.
-func (c *CalVer) GetMajor() string {
+func (c *Version) GetMajor() string {
 	return c.Major
 }
 
 // GetMinor returns the minor version.
-func (c *CalVer) GetMinor() string {
+func (c *Version) GetMinor() string {
 	return c.Minor
 }
 
 // GetMicro returns the micro version.
-func (c *CalVer) GetMicro() string {
+func (c *Version) GetMicro() string {
 	return c.Micro
 }
 
 // GetModifier returns the modifier version.
-func (c *CalVer) GetModifier() string {
+func (c *Version) GetModifier() string {
 	return c.Modifier
 }
 
 // GetFormat returns the original format string.
-func (c *CalVer) GetFormat() string {
+func (c *Version) GetFormat() string {
 	return c.Format
 }
 
 // IncMajor increments the major version. If the major version is 0 padded it
 // will retain the 0 padding unless the major version if of the form 09 or 099
 // or 0999 and so on.
-func (c *CalVer) IncMajor() error {
+func (c *Version) IncMajor() error {
 	major, err := internal.IncWithPadding(c.Major)
 	if err != nil {
 		return err
@@ -149,7 +149,7 @@ func (c *CalVer) IncMajor() error {
 // IncMinor increments the minor version. If the minor version is 0 padded it
 // will retain the 0 padding unless the minor version if of the form 09 or 099
 // or 0999 and so on.
-func (c *CalVer) IncMinor() error {
+func (c *Version) IncMinor() error {
 	minor, err := internal.IncWithPadding(c.Minor)
 	if err != nil {
 		return err
@@ -161,7 +161,7 @@ func (c *CalVer) IncMinor() error {
 // IncMicro increments the micro version. If the micro version is 0 padded it
 // will retain the 0 padding unless the micro version if of the form 09 or 099
 // or 0999 and so on.
-func (c *CalVer) IncMicro() error {
+func (c *Version) IncMicro() error {
 	micro, err := internal.IncWithPadding(c.Micro)
 	if err != nil {
 		return err
@@ -175,7 +175,7 @@ func (c *CalVer) IncMicro() error {
 // form 09 or 099 or 0999 and so on.
 //
 // Be careful with this. Only use if the modifier is a number.
-func (c *CalVer) IncModifier() error {
+func (c *Version) IncModifier() error {
 	modifier, err := internal.IncWithPadding(c.Modifier)
 	if err != nil {
 		return err
@@ -184,7 +184,7 @@ func (c *CalVer) IncModifier() error {
 	return nil
 }
 
-// Series returns the series of the CalVer object. The series determined using
+// Series returns the series of the Version object. The series determined using
 // the provided level. For example, if the level is major, the series will be
 // the major version. If the level is minor, the series will be the major and
 // minor version and so on.
@@ -194,16 +194,16 @@ func (c *CalVer) IncModifier() error {
 //
 // Example:
 //
-//	ver, err := NewCalVer("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-14")
+//	ver, err := NewVersion("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-14")
 //	if err != nil {
 //	    return err
 //	}
-//	fmt.Println(ver.Series("major")) // Rel-2025
-//	fmt.Println(ver.Series("minor")) // Rel-2025-07
-//	fmt.Println(ver.Series("micro")) // Rel-2025-07-14
+//	fmt.Println(ver.Series("major"))    // Rel-2025
+//	fmt.Println(ver.Series("minor"))    // Rel-2025-07
+//	fmt.Println(ver.Series("micro"))    // Rel-2025-07-14
 //	fmt.Println(ver.Series("modifier")) // Rel-2025-07-14-0
-//	fmt.Println(ver.Series("")) // Rel-2025-07-14
-func (c *CalVer) Series(level string) string {
+//	fmt.Println(ver.Series(""))         // Rel-2025-07-14
+func (c *Version) Series(level string) string {
 	level = strings.ToLower(level)
 	if !slices.Contains(internal.ValidLevels, level) {
 		return c.String()
@@ -238,7 +238,7 @@ func (c *CalVer) Series(level string) string {
 	return format
 }
 
-func getValueForLevel(c *CalVer, level string) string {
+func getValueForLevel(c *Version, level string) string {
 	if level == internal.KeyMajor {
 		return c.Major
 	}

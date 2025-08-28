@@ -8,7 +8,6 @@ import (
 )
 
 func TestCompare(t *testing.T) {
-
 	tests := []struct {
 		name    string
 		format  string
@@ -146,11 +145,11 @@ func TestCompare(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			version, err := calver.NewCalVer(tt.format, tt.version)
+			ver, err := calver.NewVersion(tt.format, tt.version)
 			assert.NoError(t, err)
-			other, err := calver.NewCalVer(tt.format, tt.other)
+			other, err := calver.NewVersion(tt.format, tt.other)
 			assert.NoError(t, err)
-			got, err := version.Compare(other)
+			got, err := ver.Compare(other)
 			assert.NoError(t, err)
 			assert.Equal(t, tt.want, got)
 		})

@@ -1,15 +1,15 @@
 package calver
 
-// Collection is a collection of CalVer objects. It implements the
+// Collection is a collection of Version objects. It implements the
 // sort.Interface interface.
-type Collection []*CalVer
+type Collection []*Version
 
 // NewCollection creates a new Collection from a format and a list of versions.
 // It returns an error if any of the versions do not match the format.
 func NewCollection(format string, versions ...string) (Collection, error) {
 	collection := make(Collection, len(versions))
 	for i, version := range versions {
-		calver, err := NewCalVer(format, version)
+		calver, err := NewVersion(format, version)
 		if err != nil {
 			return nil, err
 		}
