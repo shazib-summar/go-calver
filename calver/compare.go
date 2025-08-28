@@ -32,10 +32,13 @@ func (c *CalVer) Compare(other *CalVer) (int, error) {
 
 	if c.Major != "" && other.Major != "" {
 		if c.Major != other.Major {
-			majorCurrent, _ := strconv.Atoi(c.Major)
-			majorOther, _ := strconv.Atoi(other.Major)
-			if majorCurrent == majorOther {
-				return 0, nil
+			majorCurrent, err := strconv.Atoi(c.Major)
+			if err != nil {
+				return 0, fmt.Errorf("major is not an integer: %s", c.Major)
+			}
+			majorOther, err := strconv.Atoi(other.Major)
+			if err != nil {
+				return 0, fmt.Errorf("major is not an integer: %s", other.Major)
 			}
 			if majorCurrent < majorOther {
 				return -1, nil
@@ -46,10 +49,13 @@ func (c *CalVer) Compare(other *CalVer) (int, error) {
 
 	if c.Minor != "" && other.Minor != "" {
 		if c.Minor != other.Minor {
-			minorCurrent, _ := strconv.Atoi(c.Minor)
-			minorOther, _ := strconv.Atoi(other.Minor)
-			if minorCurrent == minorOther {
-				return 0, nil
+			minorCurrent, err := strconv.Atoi(c.Minor)
+			if err != nil {
+				return 0, fmt.Errorf("minor is not an integer: %s", c.Minor)
+			}
+			minorOther, err := strconv.Atoi(other.Minor)
+			if err != nil {
+				return 0, fmt.Errorf("minor is not an integer: %s", other.Minor)
 			}
 			if minorCurrent < minorOther {
 				return -1, nil
@@ -60,10 +66,13 @@ func (c *CalVer) Compare(other *CalVer) (int, error) {
 
 	if c.Micro != "" && other.Micro != "" {
 		if c.Micro != other.Micro {
-			microCurrent, _ := strconv.Atoi(c.Micro)
-			microOther, _ := strconv.Atoi(other.Micro)
-			if microCurrent == microOther {
-				return 0, nil
+			microCurrent, err := strconv.Atoi(c.Micro)
+			if err != nil {
+				return 0, fmt.Errorf("micro is not an integer: %s", c.Micro)
+			}
+			microOther, err := strconv.Atoi(other.Micro)
+			if err != nil {
+				return 0, fmt.Errorf("micro is not an integer: %s", other.Micro)
 			}
 			if microCurrent < microOther {
 				return -1, nil
@@ -73,7 +82,15 @@ func (c *CalVer) Compare(other *CalVer) (int, error) {
 	}
 
 	if c.Modifier != "" && other.Modifier != "" {
-		return strings.Compare(c.Modifier, other.Modifier), nil
+		modifierCurrent, errModifierCurrent := strconv.Atoi(c.Modifier)
+		modifierOther, errModifierOther := strconv.Atoi(other.Modifier)
+		if errModifierCurrent != nil || errModifierOther != nil {
+			return strings.Compare(c.Modifier, other.Modifier), nil
+		}
+		if modifierCurrent < modifierOther {
+			return -1, nil
+		}
+		return 1, nil
 	}
 
 	return 0, nil

@@ -115,6 +115,44 @@ func TestSortCollection(t *testing.T) {
 			versions: []string{"20240811", "20240711", "20250711", "20251130", "20250826"},
 			want:     []string{"20240711", "20240811", "20250711", "20250826", "20251130"},
 		},
+		{
+			name:     "7",
+			format:   "<YYYY><MM><DD>-alpha.<MODIFIER>",
+			versions: []string{"20220721-alpha.1", "20210922-alpha.2", "20210318-alpha.3", "20260121-alpha.4", "20210721-alpha.5"},
+			want:     []string{"20210318-alpha.3", "20210721-alpha.5", "20210922-alpha.2", "20220721-alpha.1", "20260121-alpha.4"},
+		},
+		{
+			name:   "8",
+			format: "<YYYY>/<MM>/<DD>-eksbuild.<MODIFIER>",
+			versions: []string{
+				"2025/07/24-eksbuild.16002300",
+				"2025/07/24-eksbuild.16004300",
+				"2025/07/24-eksbuild.16001300",
+			},
+			want: []string{
+				"2025/07/24-eksbuild.16001300",
+				"2025/07/24-eksbuild.16002300",
+				"2025/07/24-eksbuild.16004300",
+			},
+		},
+		{
+			name:   "9",
+			format: "<YYYY><MM><DD>-foobar.<MODIFIER>",
+			versions: []string{
+				"20250724-foobar.alpha",
+				"20250724-foobar.beta",
+				"20250724-foobar.gamma",
+				"20250724-foobar.delta",
+				"20250724-foobar.epsilon",
+			},
+			want: []string{
+				"20250724-foobar.alpha",
+				"20250724-foobar.beta",
+				"20250724-foobar.delta",
+				"20250724-foobar.epsilon",
+				"20250724-foobar.gamma",
+			},
+		},
 	}
 
 	for _, tt := range tests {
