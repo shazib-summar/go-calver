@@ -1,3 +1,8 @@
+[![Go Reference](https://pkg.go.dev/badge/github.com/shazib-summar/go-calver.svg)](https://pkg.go.dev/github.com/shazib-summar/go-calver)
+[![Go Report Card](https://goreportcard.com/badge/github.com/shazib-summar/go-calver)](https://goreportcard.com/report/github.com/shazib-summar/go-calver)
+[![Tests Status](https://github.com/shazib-summar/go-calver/actions/workflows/codestyle.yml/badge.svg?branch=main)](https://github.com/shazib-summar/go-calver/actions)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
+
 # go-calver
 
 A Go library for parsing, validating, and manipulating Calendar Versioning
@@ -19,7 +24,10 @@ for projects that release frequently or on a schedule.
 - **Comparison Operations**: Compare CalVer versions with proper precedence
   handling
 - **Collections**: Sort and manage collections of CalVer objects
-- **Zero Dependencies**: Pure Go implementation with no external dependencies
+- **Version Incrementing**: Increment major, minor, micro, and modifier versions
+  while preserving zero-padding
+- **Series Management**: Extract version series at different levels (major,
+  minor, micro, modifier)
 - **Comprehensive Testing**: Extensive test coverage for all functionality
 - **Unlimited Format Support**: Supports any format string since users control
   the format - the only requirement is to use the CalVer conventions correctly
@@ -36,50 +44,66 @@ go get github.com/shazib-summar/go-calver
 package main
 
 import (
-    "fmt"
-    "log"
+	"fmt"
+	"log"
 
-    "github.com/shazib-summar/go-calver"
+	"github.com/shazib-summar/go-calver/calver"
 )
 
 func main() {
-    format := "Rel-<YYYY>-<0M>-<0D>"
-    // Create a new CalVer object
-    calver, err := calver.NewCalVer(format, "Rel-2025-07-14")
-    if err != nil {
-        log.Fatal(err)
-    }
+	format := "Rel-<YYYY>-<0M>-<0D>"
+	// Create a new CalVer object
+	ver, err := calver.NewCalVer(format, "Rel-2025-07-14")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-    // Print the version
-    fmt.Println(calver.String()) // Output: Rel-2025-07-14
+	// Print the version
+	fmt.Println(ver.String()) // Output: Rel-2025-07-14
 
-    // Compare with another version
-    other, _ := calver.NewCalVer(format, "Rel-2025-07-15")
-    result, _ := calver.Compare(other)
-    fmt.Printf("Comparison result: %d\n", result) // Output: -1 (less than)
+	// Compare with another version
+	other, _ := calver.NewCalVer(format, "Rel-2025-07-15")
+	result, _ := ver.Compare(other)
+	fmt.Printf("Comparison result: %d\n", result) // Output: -1 (less than)
 }
 ```
 
 ## Supported Formats
 
-The library supports all standard CalVer conventions:
+The library supports all standard CalVer conventions, organized into four levels
+that determine the order when comparing versions. Only one convention string may
+be used per level in the format string provided to `NewVersion` func.
 
-| Convention   | Description                                | Example                  |
-| ------------ | ------------------------------------------ | ------------------------ |
-| `<YYYY>`     | 4-digit year                               | `2025`                   |
-| `<YY>`       | 1-2 digit year                             | `25`                     |
-| `<0Y>`       | 2-digit year (zero-padded)                 | `05`                     |
-| `<MM>`       | 1-2 digit month                            | `7` or `12`              |
-| `<0M>`       | 2-digit month (zero-padded)                | `07` or `12`             |
-| `<MINOR>`    | Minor version number                       | `14`                     |
-| `<WW>`       | 1-2 digit week                             | `1` or `52`              |
-| `<0W>`       | 2-digit week (zero-padded)                 | `01` or `52`             |
-| `<DD>`       | 1-2 digit day                              | `1` or `31`              |
-| `<0D>`       | 2-digit day (zero-padded)                  | `01` or `31`             |
-| `<MICRO>`    | Micro version number                       | `42`                     |
-| `<MODIFIER>` | Modifier string or additional version part | `alpha`, `beta`, `12:43` |
+### Levels and Conventions
+
+| Level        | Description                  | Conventions                               | Example                  |
+| ------------ | ---------------------------- | ----------------------------------------- | ------------------------ |
+| **Major**    | Primary version identifier   | `<YYYY>`, `<YY>`, `<0Y>`, `<MAJOR>`       | `2025`, `25`, `05`, `12` |
+| **Minor**    | Secondary version identifier | `<MM>`, `<0M>`, `<MINOR>`                 | `7`, `07`, `14`          |
+| **Micro**    | Tertiary version identifier  | `<WW>`, `<0W>`, `<DD>`, `<0D>`, `<MICRO>` | `1`, `01`, `31`, `42`    |
+| **Modifier** | Additional version metadata  | `<MODIFIER>`                              | `alpha`, `beta`, `12:43` |
+
+### Convention Details
+
+| Convention   | Description                                | Regex                |
+| ------------ | ------------------------------------------ | -------------------- |
+| `<YYYY>`     | 4-digit year                               | `(?P<major>\d{4})`   |
+| `<YY>`       | 1-2 digit year                             | `(?P<major>\d{1,2})` |
+| `<0Y>`       | 2-digit year (zero-padded)                 | `(?P<major>\d{2})`   |
+| `<MAJOR>`    | Major version number                       | `(?P<major>\d+)`     |
+| `<MM>`       | 1-2 digit month                            | `(?P<minor>\d{1,2})` |
+| `<0M>`       | 2-digit month (zero-padded)                | `(?P<minor>\d{2})`   |
+| `<MINOR>`    | Minor version number                       | `(?P<minor>\d+)`     |
+| `<WW>`       | 1-2 digit week                             | `(?P<micro>\d{1,2})` |
+| `<0W>`       | 2-digit week (zero-padded)                 | `(?P<micro>\d{2})`   |
+| `<DD>`       | 1-2 digit day                              | `(?P<micro>\d{1,2})` |
+| `<0D>`       | 2-digit day (zero-padded)                  | `(?P<micro>\d{2})`   |
+| `<MICRO>`    | Micro version number                       | `(?P<micro>\d+)`     |
+| `<MODIFIER>` | Modifier string or additional version part | `(?P<modifier>.*)`   |
 
 ## Usage Examples
+
+Complete examples files can be found in the [examples](examples) dir
 
 ### Basic Version Creation
 
@@ -147,6 +171,50 @@ for _, v := range collection {
 }
 ```
 
+### Version Incrementing
+
+```go
+// Create a version
+ver, err := calver.NewCalVer("<YYYY>.<0M>.<0D>", "2025.07.14")
+if err != nil {
+    log.Fatal(err)
+}
+
+// Increment different parts
+err = ver.IncMajor()   // 2025 -> 2026
+err = ver.IncMinor()   // 07 -> 08
+err = ver.IncMicro()   // 14 -> 15
+
+fmt.Println(ver.String()) // Output: 2026.08.15
+
+// Zero-padding is preserved
+ver, _ = calver.NewCalVer("<YYYY>.<0M>.<0D>", "2025.01.09")
+err = ver.IncMinor()   // 01 -> 02 (preserves zero-padding)
+err = ver.IncMicro()   // 09 -> 10 (loses zero-padding)
+
+fmt.Println(ver.String()) // Output: 2025.02.10
+```
+
+### Series Management
+
+```go
+ver, err := calver.NewCalVer("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-14")
+if err != nil {
+    log.Fatal(err)
+}
+
+// Get series at different levels
+fmt.Println(ver.Series("major"))    // Output: Rel-2025
+fmt.Println(ver.Series("minor"))    // Output: Rel-2025-07
+fmt.Println(ver.Series("micro"))    // Output: Rel-2025-07-14
+fmt.Println(ver.Series("modifier")) // Output: Rel-2025-07-14
+fmt.Println(ver.Series(""))         // Output: Rel-2025-07-14 (full version)
+
+// Useful for grouping related versions
+majorSeries := ver.Series("major") // "Rel-2025"
+minorSeries := ver.Series("minor") // "Rel-2025-07"
+```
+
 ### Custom Format with Modifiers
 
 ```go
@@ -202,8 +270,3 @@ This project is licensed under the Apache License 2.0 - see the
 - [CalVer.org](https://calver.org/) for the Calendar Versioning specification
 - The Go community for best practices and testing patterns
 - My playful niece Abigail without whom this would've been done much sooner.
-
-## Related Projects
-
-- [SemVer](https://semver.org/) - Semantic Versioning specification
-- [Go modules](https://golang.org/ref/mod) - Go's dependency management system
