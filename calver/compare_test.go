@@ -155,3 +155,151 @@ func TestCompare(t *testing.T) {
 		})
 	}
 }
+
+func TestEqual(t *testing.T) {
+	tests := []struct {
+		name    string
+		format  string
+		version string
+		other   string
+		want    bool
+	}{
+		{
+			name:    "1",
+			format:  "<YYYY>-R<DD>",
+			version: "2025-R1",
+			other:   "2025-R2",
+			want:    false,
+		},
+		{
+			name:    "2",
+			format:  "<YYYY>-<MM>-<DD>",
+			version: "2025-07-14",
+			other:   "2025-07-15",
+			want:    false,
+		},
+		{
+			name:    "3",
+			format:  "<YYYY>-<MM>-<DD>",
+			version: "2025-07-14",
+			other:   "2025-07-14",
+			want:    true,
+		},
+		{
+			name:    "4",
+			format:  "<YYYY>-<MM>-<DD>",
+			version: "2025-07-16",
+			other:   "2025-07-14",
+			want:    false,
+		},
+		{
+			name:    "5",
+			format:  "<YYYY>-<MM>-<DD>",
+			version: "2025-07-16",
+			other:   "2020-07-14",
+			want:    false,
+		},
+		{
+			name:    "6",
+			format:  "<YYYY>-<MM>-<DD>",
+			version: "2025-07-16",
+			other:   "2020-07-14",
+			want:    false,
+		},
+		{
+			name:    "7",
+			format:  "<YYYY>.<MM>.<DD>",
+			version: "2020.06.16",
+			other:   "2020.07.14",
+			want:    false,
+		},
+		{
+			name:    "8",
+			format:  "<YYYY>-WW<DD>",
+			version: "2025-WW14",
+			other:   "2025-WW15",
+			want:    false,
+		},
+		{
+			name:    "9",
+			format:  "RELEASE.<YYYY>-<0M>-<0D>T<MODIFIER>Z",
+			version: "RELEASE.2025-07-23T15-54-02Z",
+			other:   "RELEASE.2025-07-22T15-54-02Z",
+			want:    false,
+		},
+		{
+			name:    "10",
+			format:  "RELEASE.<YYYY>-<0M>-<0D>T<MODIFIER>Z",
+			version: "RELEASE.2025-07-23T15-54-02Z",
+			other:   "RELEASE.2025-07-23T15-54-02Z",
+			want:    true,
+		},
+		{
+			name:    "11",
+			format:  "RELEASE.<YYYY>-<0M>-<0D>T<MODIFIER>Z",
+			version: "RELEASE.2025-07-23T15-54-02Z",
+			other:   "RELEASE.2025-07-23T15-54-03Z",
+			want:    false,
+		},
+		{
+			name:    "12",
+			format:  "RELEASE.<YYYY>-<0M>-<0D>T<MODIFIER>Z",
+			version: "RELEASE.2025-07-23T14-54-02Z",
+			other:   "RELEASE.2025-07-23T15-54-02Z",
+			want:    false,
+		},
+		{
+			name:    "13",
+			format:  "RELEASE.<YYYY>-<0M>-<0D>T<MODIFIER>Z",
+			version: "RELEASE.2025-07-23T14-54-02Z",
+			other:   "RELEASE.2025-07-23T15-54-02Z",
+			want:    false,
+		},
+		{
+			name:    "14",
+			format:  "<MAJOR>-<MINOR>-<MICRO>T<MODIFIER>Z",
+			version: "2025-07-23T14-54-02Z",
+			other:   "2025-07-23T15-54-02Z",
+			want:    false,
+		},
+		{
+			name:    "15",
+			format:  "<YYYY><MM><DD>",
+			version: "20260723",
+			other:   "20250724",
+			want:    false,
+		},
+		{
+			name:    "16",
+			format:  "<YYYY><MM><DD>-alpha.<MODIFIER>",
+			version: "20250724-alpha.2",
+			other:   "20250724-alpha.1",
+			want:    false,
+		},
+		{
+			name:    "17",
+			format:  "<YYYY><MM><DD>-eksbuild.<MODIFIER>",
+			version: "20250724-eksbuild.16002300",
+			other:   "20250724-eksbuild.16004300",
+			want:    false,
+		},
+		{
+			name:    "18",
+			format:  "<YYYY><MM><DD>-foobar.<MODIFIER>",
+			version: "20250724-foobar.alpha",
+			other:   "20250724-foobar.beta",
+			want:    false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ver, err := calver.NewVersion(tt.format, tt.version)
+			assert.NoError(t, err)
+			other, err := calver.NewVersion(tt.format, tt.other)
+			assert.NoError(t, err)
+			got, err := ver.Equal(other)
+			assert.NoError(t, err)
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}
