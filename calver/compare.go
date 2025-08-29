@@ -144,3 +144,100 @@ func (c *Version) Equal(other *Version) (bool, error) {
 	}
 	return compare == 0, nil
 }
+
+// EqualOrPanic is just Equal, but panics if there's an error.
+// // Example:
+// // ver1, err := calver.NewVersion("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-14")
+// // if err != nil {
+// //     return err
+// // }
+// // ver2, err := calver.NewVersion("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-15")
+// // if err != nil {
+// //     return err
+// // }
+// // fmt.Printf("%t\n", ver1.EqualOrPanic(ver2)) // false
+func (c *Version) EqualOrPanic(other *Version) bool {
+	equal, err := c.Equal(other)
+	if err != nil {
+		panic(err)
+	}
+	return equal
+}
+
+// Less returns true if the current version is less than the other version.
+// If Compare() returns an error, Less will propagate it.
+// Example:
+// // ver1, err := calver.NewVersion("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-14")
+// // if err != nil {
+// //     return err
+// // }
+// // ver2, err := calver.NewVersion("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-15")
+// // if err != nil {
+// //     return err
+// // }
+// // fmt.Printf("%t\n", ver1.Less(ver2)) // true
+func (c *Version) Less(other *Version) (bool, error) {
+	compare, err := c.Compare(other)
+	if err != nil {
+		return false, err
+	}
+	return compare == -1, nil
+}
+
+// LessOrPanic is just Less, but panics if there's an error.
+// Example:
+// // ver1, err := calver.NewVersion("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-14")
+// // if err != nil {
+// //     return err
+// // }
+// // ver2, err := calver.NewVersion("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-15")
+// // if err != nil {
+// //     return err
+// // }
+// // fmt.Printf("%t\n", ver1.LessOrPanic(ver2)) // true
+func (c *Version) LessOrPanic(other *Version) bool {
+	less, err := c.Less(other)
+	if err != nil {
+		panic(err)
+	}
+	return less
+}
+
+// Greater returns true if the current version is greater than the other version.
+// If Compare() returns an error, Greater will propagate it.
+// Example:
+// // ver1, err := calver.NewVersion("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-14")
+// // if err != nil {
+// //     return err
+// // }
+// // ver2, err := calver.NewVersion("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-15")
+// // if err != nil {
+// //     return err
+// // }
+// // fmt.Printf("%t\n", ver1.Greater(ver2)) // false
+func (c *Version) Greater(other *Version) (bool, error) {
+	compare, err := c.Compare(other)
+	if err != nil {
+		return false, err
+	}
+	return compare == 1, nil
+}
+
+// GreaterOrPanic is just Greater, but panics if there's an error.
+// Example:
+// // ver1, err := calver.NewVersion("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-14")
+// // if err != nil {
+// //     return err
+// // }
+// // ver2, err := calver.NewVersion("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-15")
+// // if err != nil {
+// //     return err
+// // }
+// // fmt.Printf("%t\n", ver1.GreaterOrPanic(ver2)) // false
+func (c *Version) GreaterOrPanic(other *Version) bool {
+	greater, err := c.Greater(other)
+	if err != nil {
+		panic(err)
+	}
+	return greater
+}
