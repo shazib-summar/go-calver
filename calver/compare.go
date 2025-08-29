@@ -119,3 +119,28 @@ func (c *Version) CompareOrPanic(other *Version) int {
 	}
 	return compare
 }
+
+// Equal returns true if the versions are equal, false otherwise.
+// If Compare() returns an error, Equal will propagate it.
+// Example:
+//
+// ver1, err := calver.NewVersion("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-14")
+//
+//	if err != nil {
+//	    return err
+//	}
+//
+// ver2, err := calver.NewVersion("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-14")
+// if err != nil
+//
+//	    return err
+//	}
+//
+// fmt.Printf("%t\n", ver1.Equal(ver2)) // true
+func (c *Version) Equal(other *Version) (bool, error) {
+	compare, err := c.Compare(other)
+	if err != nil {
+		return false, err
+	}
+	return compare == 0, nil
+}
