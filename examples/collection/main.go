@@ -18,7 +18,7 @@ func main() {
 		"2021.07.19",
 	}
 
-	coll, err := calver.NewCollection(format, versions...)
+	coll, err := calver.NewCollection(versions, format)
 	if err != nil {
 		panic(err)
 	}
