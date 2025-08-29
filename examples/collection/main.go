@@ -1,13 +1,13 @@
-package examples
+package main
 
 import (
 	"fmt"
 	"sort"
 
-	"github.com/shazib-summar/go-calver/calver"
+	"github.com/shazib-summar/go-calver"
 )
 
-func ex_collection() {
+func main() {
 	format := "<YYYY>.<0M>.<0D>"
 	versions := []string{
 		"2025.01.18",
