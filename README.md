@@ -5,7 +5,7 @@
 
 # go-calver
 
-A Go library for parsing, validating, and manipulating Calendar Versioning
+A Go library for parsing, validating, and manipulating Calendar Versioning foo
 (CalVer) strings according to the [CalVer specification](https://calver.org/).
 
 ## What is CalVer?
