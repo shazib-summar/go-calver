@@ -44,28 +44,46 @@ go get github.com/shazib-summar/go-calver
 package main
 
 import (
-	"fmt"
-	"log"
+    "fmt"
+    "log"
 
-	"github.com/shazib-summar/go-calver/calver"
+    "github.com/shazib-summar/go-calver"
 )
 
 func main() {
-	format := "Rel-<YYYY>-<0M>-<0D>"
-	// Create a new Version object
-	ver, err := calver.NewVersion(format, "Rel-2025-07-14")
-	if err != nil {
-		log.Fatal(err)
-	}
+    format := "Rel-<YYYY>-<0M>-<0D>"
+    // Create a new Version object
+    ver, err := calver.NewVersion("Rel-2025-07-14", format)
+    if err != nil {
+        log.Fatal(err)
+    }
 
-	// Print the version
-	fmt.Println(ver.String()) // Output: Rel-2025-07-14
+    // Print the version
+    fmt.Println(ver.String()) // Output: Rel-2025-07-14
 
-	// Compare with another version
-	other, _ := calver.NewVersion(format, "Rel-2025-07-15")
-	result, _ := ver.Compare(other)
-	fmt.Printf("Comparison result: %d\n", result) // Output: -1 (less than)
+    // Compare with another version
+    other, _ := calver.NewVersion("Rel-2025-07-15", format)
+    result, _ := ver.Compare(other)
+    fmt.Printf("Comparison result: %d\n", result) // Output: -1 (less than)
 }
+```
+
+You can pass more than one format strings as well. If multiple formats are
+provided, the format that matches the version string the most will be used. For
+example, in the following code, the format `"Rel-<YYYY>-<0M>-<0D>"` will be used
+at it returns a greater number of matched regex groups than the other formats.
+
+```go
+ver, err := NewVersion(
+    "Rel-2025-07-14",
+    "Rel-<YYYY>",
+    "Rel-<YYYY>-<0M>",
+    "Rel-<YYYY>-<0M>-<0D>",
+)
+if err != nil {
+    return err
+}
+fmt.Println(ver.String()) // Rel-2025-07-14
 ```
 
 ## Supported Formats
@@ -103,25 +121,29 @@ be used per level in the format string provided to `NewVersion` func.
 
 ## Usage Examples
 
-Complete examples files can be found in the [examples](examples) dir
+Complete examples files can be found in the [examples](examples) dir. Example can be run with the following command:
+
+```bash
+make examples
+```
 
 ### Basic Version Creation
 
 ```go
 // Year-Month-Day format
-ver, err := calver.NewVersion("<YYYY>-<MM>-<DD>", "2025-07-14")
+ver, err := calver.NewVersion("2025-07-14", "<YYYY>-<MM>-<DD>")
 if err != nil {
     log.Fatal(err)
 }
 
 // Year.Release format
-ver, err = calver.NewVersion("<YYYY>.R<DD>", "2025.R14")
+ver, err = calver.NewVersion("2025.R14", "<YYYY>.R<DD>")
 if err != nil {
     log.Fatal(err)
 }
 
 // Ubuntu-style format
-ver, err = calver.NewVersion("<0Y>.<0M>.<DD>", "22.04.6")
+ver, err = calver.NewVersion("22.04.6", "<0Y>.<0M>.<DD>")
 if err != nil {
     log.Fatal(err)
 }
@@ -130,8 +152,8 @@ if err != nil {
 ### Version Comparison
 
 ```go
-verA, _ := calver.NewVersion("<YYYY>-<MM>-<DD>", "2025-07-14")
-verB, _ := calver.NewVersion("<YYYY>-<MM>-<DD>", "2025-07-15")
+verA, _ := calver.NewVersion("2025-07-14", "<YYYY>-<MM>-<DD>")
+verB, _ := calver.NewVersion("2025-07-15", "<YYYY>-<MM>-<DD>")
 
 result, err := verA.Compare(verB)
 if err != nil {
@@ -157,7 +179,7 @@ versions := []string{
     "2025-07-13",
 }
 
-collection, err := calver.NewCollection("<YYYY>-<MM>-<DD>", versions...)
+collection, err := calver.NewCollection(versions, "<YYYY>-<MM>-<DD>")
 if err != nil {
     log.Fatal(err)
 }
@@ -175,7 +197,7 @@ for _, v := range collection {
 
 ```go
 // Create a version
-ver, err := calver.NewVersion("<YYYY>.<0M>.<0D>", "2025.07.14")
+ver, err := calver.NewVersion("2025.07.14", "<YYYY>.<0M>.<0D>")
 if err != nil {
     log.Fatal(err)
 }
@@ -188,7 +210,7 @@ err = ver.IncMicro()   // 14 -> 15
 fmt.Println(ver.String()) // Output: 2026.08.15
 
 // Zero-padding is preserved
-ver, _ = calver.NewVersion("<YYYY>.<0M>.<0D>", "2025.01.09")
+ver, _ = calver.NewVersion("2025.01.09", "<YYYY>.<0M>.<0D>")
 err = ver.IncMinor()   // 01 -> 02 (preserves zero-padding)
 err = ver.IncMicro()   // 09 -> 10 (loses zero-padding)
 
@@ -198,7 +220,7 @@ fmt.Println(ver.String()) // Output: 2025.02.10
 ### Series Management
 
 ```go
-ver, err := calver.NewVersion("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-14")
+ver, err := calver.NewVersion("Rel-2025-07-14", "Rel-<YYYY>-<0M>-<0D>")
 if err != nil {
     log.Fatal(err)
 }
@@ -222,7 +244,7 @@ minorSeries := ver.Series("minor") // "Rel-2025-07"
 format := "RELEASE.<YYYY>-<0M>-<0D>T<MODIFIER>Z"
 version := "RELEASE.2025-07-23T15-54-02Z"
 
-ver, err := calver.NewVersion(format, version)
+ver, err := calver.NewVersion(version, format)
 if err != nil {
     log.Fatal(err)
 }
