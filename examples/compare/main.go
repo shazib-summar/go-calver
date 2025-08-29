@@ -1,12 +1,12 @@
-package examples
+package main
 
 import (
 	"fmt"
 
-	"github.com/shazib-summar/go-calver/calver"
+	"github.com/shazib-summar/go-calver"
 )
 
-func ex_compare() {
+func main() {
 	format := "<YYYY>-Rel<MINOR>/<MICRO>"
 	versionA := "2025-Rel07/14"
 	versionB := "2025-Rel07/15"

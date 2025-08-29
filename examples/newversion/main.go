@@ -1,12 +1,12 @@
-package examples
+package main
 
 import (
 	"fmt"
 
-	"github.com/shazib-summar/go-calver/calver"
+	"github.com/shazib-summar/go-calver"
 )
 
-func ex_newversion() {
+func main() {
 	entries := []map[string]string{
 		{
 			"format":  "Rel-<YYYY>-<0M>-<0D>",
