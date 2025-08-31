@@ -24,3 +24,5 @@ examples:
 	@go run examples/compare/main.go
 	@echo "\n--> examples/newversion ..\n"
 	@go run examples/newversion/main.go
+	@echo "\n--> examples/series ...\n"
+	@go run examples/series/main.go

@@ -31,7 +31,7 @@ func main() {
 	}
 
 	for _, entry := range entries {
-		ver, err := calver.NewVersion(entry["format"], entry["version"])
+		ver, err := calver.Parse(entry["format"], entry["version"])
 		if err != nil {
 			panic(err)
 		}
