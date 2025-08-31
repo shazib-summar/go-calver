@@ -47,13 +47,13 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/shazib-summar/go-calver/calver"
+	"github.com/shazib-summar/go-calver"
 )
 
 func main() {
 	format := "Rel-<YYYY>-<0M>-<0D>"
 	// Create a new Version object
-	ver, err := calver.NewVersion(format, "Rel-2025-07-14")
+	ver, err := calver.Parse(format, "Rel-2025-07-14")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -62,8 +62,8 @@ func main() {
 	fmt.Println(ver.String()) // Output: Rel-2025-07-14
 
 	// Compare with another version
-	other, _ := calver.NewVersion(format, "Rel-2025-07-15")
-	result, _ := ver.Compare(other)
+	other, _ := calver.Parse(format, "Rel-2025-07-15")
+	result := ver.Compare(other)
 	fmt.Printf("Comparison result: %d\n", result) // Output: -1 (less than)
 }
 ```
@@ -109,19 +109,34 @@ Complete examples files can be found in the [examples](examples) dir
 
 ```go
 // Year-Month-Day format
-ver, err := calver.NewVersion("<YYYY>-<MM>-<DD>", "2025-07-14")
+ver, err := calver.Parse("<YYYY>-<MM>-<DD>", "2025-07-14")
 if err != nil {
     log.Fatal(err)
 }
 
 // Year.Release format
-ver, err = calver.NewVersion("<YYYY>.R<DD>", "2025.R14")
+ver, err = calver.Parse("<YYYY>.R<DD>", "2025.R14")
 if err != nil {
     log.Fatal(err)
 }
 
 // Ubuntu-style format
-ver, err = calver.NewVersion("<0Y>.<0M>.<DD>", "22.04.6")
+ver, err = calver.Parse("<0Y>.<0M>.<DD>", "22.04.6")
+if err != nil {
+    log.Fatal(err)
+}
+```
+
+### Version Creation with multiple Formats
+
+The following example shows how to create a Version object with multiple formats.
+In this case, the format that matches the version string will be used.
+
+```go
+ver, err := calver.ParseWithOptions(
+    "2025-07-14",
+    calver.WithFormat("<YYYY>-<MM>-<DD>", "<YYYY>.<MM>.<DD>"),
+)
 if err != nil {
     log.Fatal(err)
 }
@@ -130,14 +145,10 @@ if err != nil {
 ### Version Comparison
 
 ```go
-verA, _ := calver.NewVersion("<YYYY>-<MM>-<DD>", "2025-07-14")
-verB, _ := calver.NewVersion("<YYYY>-<MM>-<DD>", "2025-07-15")
+verA, _ := calver.Parse("<YYYY>-<MM>-<DD>", "2025-07-14")
+verB, _ := calver.Parse("<YYYY>.<MM>.<DD>", "2025.07.15")
 
-result, err := verA.Compare(verB)
-if err != nil {
-    log.Fatal(err)
-}
-
+result := verA.Compare(verB)
 switch result {
 case -1:
     fmt.Println("verA is older than verB")
@@ -171,11 +182,20 @@ for _, v := range collection {
 }
 ```
 
+### Working with Collections with multiple Formats
+
+```go
+collection, err := calver.NewCollectionWithOptions(
+    []string{"2025-07-14", "2025.07.15"},
+    calver.WithFormat("<YYYY>-<MM>-<DD>", "<YYYY>.<MM>.<DD>"),
+)
+```
+
 ### Version Incrementing
 
 ```go
 // Create a version
-ver, err := calver.NewVersion("<YYYY>.<0M>.<0D>", "2025.07.14")
+ver, err := calver.Parse("<YYYY>.<0M>.<0D>", "2025.07.14")
 if err != nil {
     log.Fatal(err)
 }
@@ -188,7 +208,7 @@ err = ver.IncMicro()   // 14 -> 15
 fmt.Println(ver.String()) // Output: 2026.08.15
 
 // Zero-padding is preserved
-ver, _ = calver.NewVersion("<YYYY>.<0M>.<0D>", "2025.01.09")
+ver, _ = calver.Parse("<YYYY>.<0M>.<0D>", "2025.01.09")
 err = ver.IncMinor()   // 01 -> 02 (preserves zero-padding)
 err = ver.IncMicro()   // 09 -> 10 (loses zero-padding)
 
@@ -198,7 +218,7 @@ fmt.Println(ver.String()) // Output: 2025.02.10
 ### Series Management
 
 ```go
-ver, err := calver.NewVersion("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-14")
+ver, err := calver.Parse("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-14")
 if err != nil {
     log.Fatal(err)
 }
@@ -222,7 +242,7 @@ minorSeries := ver.Series("minor") // "Rel-2025-07"
 format := "RELEASE.<YYYY>-<0M>-<0D>T<MODIFIER>Z"
 version := "RELEASE.2025-07-23T15-54-02Z"
 
-ver, err := calver.NewVersion(format, version)
+ver, err := calver.Parse(format, version)
 if err != nil {
     log.Fatal(err)
 }
@@ -256,7 +276,7 @@ changes, please open an issue first to discuss what you would like to change.
 3. Create a feature branch: `git checkout -b feature/amazing-feature`
 4. Make your changes and add tests
 5. Run tests: `go test ./...`
-6. Commit your changes: `git commit -m 'Add amazing feature'`
+6. Commit your changes with a DCO signature: `git commit -s -m 'Add amazing feature'`
 7. Push to the branch: `git push origin feature/amazing-feature`
 8. Open a Pull Request
 

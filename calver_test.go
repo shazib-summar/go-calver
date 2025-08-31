@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewVersion(t *testing.T) {
+func TestParse(t *testing.T) {
 	tests := []struct {
 		name    string
 		format  string
@@ -35,7 +35,67 @@ func TestNewVersion(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			_, err := calver.NewVersion(test.format, test.version)
+			_, err := calver.Parse(test.format, test.version)
+			if test.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+			}
+		})
+	}
+}
+
+func TestParseWithOptions(t *testing.T) {
+	tests := []struct {
+		name    string
+		format  []string
+		version string
+		wantErr bool
+	}{
+		{name: "1", format: []string{"<YYYY>-R<DD>", "<YYYY>-R<0D>"}, version: "2025-R1", wantErr: false},
+		{name: "2", format: []string{"<YYYY>-R<DD>", "<YYYY>-R<0D>"}, version: "2025-R01", wantErr: false},
+		{name: "3", format: []string{"<YYYY>-R<DD>", "<YYYY>-R<0D>"}, version: "2025-R01", wantErr: false},
+		{name: "4", format: []string{"<YYYY>-<MM>-<DD>", "<YYYY>.<MM>.<DD>"}, version: "2025-07-14", wantErr: false},
+		{name: "5", format: []string{"<YYYY>.<MM>.<DD>", "<YYYY>-<MM>-<DD>"}, version: "2025.07.14", wantErr: false},
+		{name: "6", format: []string{"<YYYY>-<MM>-<DD>", "<YYYY>.<MM>.<DD>"}, version: "2025-07-14", wantErr: false},
+		{name: "7", format: []string{"<YY>-<MM>-<DD>", "<YYYY>.<MM>.<DD>"}, version: "2025-07-14", wantErr: true},
+		{
+			name:    "8",
+			format:  []string{"<YYYY>-<0M>-<0D>T<MODIFIER>", "<YYYY>.<MM>.<DD>"},
+			version: "2025-07-14T15-54-02Z",
+			wantErr: false,
+		},
+		{
+			name:    "9",
+			format:  []string{"<YYYY>/<0M>/<0D>T<MODIFIER>", "<YYYY>.<MM>.<DD>"},
+			version: "2025-07-14T15-54-02Z",
+			wantErr: true,
+		},
+		{
+			name:    "10",
+			format:  []string{"Rel-<YYYY>-<0M>-<0D>T<MODIFIER>", "<YYYY>.<MM>.<DD>"},
+			version: "2025-07-14T15-54-02Z",
+			wantErr: true,
+		},
+		{
+			name:    "11",
+			format:  []string{},
+			version: "2025-07-14T15-54-02Z",
+			wantErr: true,
+		},
+		{
+			name:    "12",
+			format:  []string{"Rel-<YYYY>-<0M>-<0D>T<MODIFIER>"},
+			version: "",
+			wantErr: true,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			_, err := calver.ParseWithOptions(
+				test.version,
+				calver.WithFormat(test.format...),
+			)
 			if test.wantErr {
 				assert.Error(t, err)
 			} else {
@@ -48,38 +108,56 @@ func TestNewVersion(t *testing.T) {
 func TestVersionString(t *testing.T) {
 	tests := []struct {
 		name    string
-		format  string
+		format  []string
 		version string
 		want    string
 	}{
-		{name: "1", format: "<YYYY>-R<DD>", version: "2025-R1", want: "2025-R1"},
-		{name: "2", format: "<YYYY>-<MM>-<DD>", version: "2025-07-14", want: "2025-07-14"},
-		{name: "3", format: "<YYYY>.<MM>.<DD>", version: "2025.07.14", want: "2025.07.14"},
-		{name: "4", format: "<YY>-<MM>-<DD>", version: "25-07-14", want: "25-07-14"},
-		{name: "5", format: "<0Y>.<0M>.<DD>", version: "18.04.6", want: "18.04.6"},
-		{name: "6", format: "<YYYY>-WW<DD>", version: "2025-WW14", want: "2025-WW14"},
-		{name: "7", format: "<YYYY>-WW<0D>", version: "2025-WW04", want: "2025-WW04"},
+		{name: "1", format: []string{"<YYYY>-R<DD>", "<YYYY>-R<0D>"}, version: "2025-R1", want: "2025-R1"},
+		{name: "2", format: []string{"<YYYY>-<MM>-<DD>"}, version: "2025-07-14", want: "2025-07-14"},
+		{name: "3", format: []string{"<YYYY>.<MM>.<DD>"}, version: "2025.07.14", want: "2025.07.14"},
+		{name: "4", format: []string{"<YY>-<MM>-<DD>"}, version: "25-07-14", want: "25-07-14"},
+		{name: "5", format: []string{"<0Y>.<0M>.<DD>"}, version: "18.04.6", want: "18.04.6"},
+		{name: "6", format: []string{"<YYYY>-WW<DD>"}, version: "2025-WW14", want: "2025-WW14"},
+		{name: "7", format: []string{"<YYYY>-WW<0D>"}, version: "2025-WW04", want: "2025-WW04"},
 		{
 			name:    "8",
-			format:  "RELEASE.<YYYY>-<0M>-<0D>T<MODIFIER>Z",
+			format:  []string{"RELEASE.<YYYY>-<0M>-<0D>T<MODIFIER>Z"},
 			version: "RELEASE.2025-07-23T15-54-02Z",
 			want:    "RELEASE.2025-07-23T15-54-02Z",
 		},
-		{name: "9", format: "<MAJOR>-WW<MINOR>", version: "2025-WW04", want: "2025-WW04"},
-		{name: "10", format: "<MAJOR>-<YYY>-<MICRO>", version: "2025-<YYY>-12", want: "2025-<YYY>-12"},
+		{name: "9", format: []string{"<MAJOR>-WW<MINOR>"}, version: "2025-WW04", want: "2025-WW04"},
+		{name: "10", format: []string{"<MAJOR>-<YYY>-<MICRO>"}, version: "2025-<YYY>-12", want: "2025-<YYY>-12"},
 		{
 			name:    "11",
-			format:  "v<YYYY><0M><0D>",
+			format:  []string{"v<YYYY><0M><0D>"},
 			version: "v20250723",
 			want:    "v20250723",
+		},
+		{
+			name:    "12",
+			format:  []string{"<YYYY>-<MM>-<DD>", "<YYYY>.<MM>.<DD>"},
+			version: "2025-07-14",
+			want:    "2025-07-14",
+		},
+		{
+			name:    "13",
+			format:  []string{"<YYYY>.<MM>", "<YYYY>.<MM>.<DD>"},
+			version: "2025.07.14",
+			want:    "2025.07.14",
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			calver, err := calver.NewVersion(test.format, test.version)
-			assert.NoError(t, err)
-			assert.Equal(t, test.want, calver.String())
+			if len(test.format) == 1 {
+				calver, err := calver.Parse(test.format[0], test.version)
+				assert.NoError(t, err)
+				assert.Equal(t, test.want, calver.String())
+			} else {
+				calver, err := calver.ParseWithOptions(test.version, calver.WithFormat(test.format...))
+				assert.NoError(t, err)
+				assert.Equal(t, test.want, calver.String())
+			}
 		})
 	}
 }
@@ -108,7 +186,7 @@ func TestVersionSeries(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			calver, err := calver.NewVersion(test.format, test.version)
+			calver, err := calver.Parse(test.format, test.version)
 			assert.NoError(t, err)
 			assert.Equal(t, test.want, calver.Series(test.level))
 		})
