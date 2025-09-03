@@ -3,7 +3,7 @@ package calver_test
 import (
 	"testing"
 
-	"github.com/shazib-summar/go-calver/calver"
+	"github.com/shazib-summar/go-calver"
 	"github.com/stretchr/testify/assert"
 )
 
