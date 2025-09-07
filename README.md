@@ -127,7 +127,7 @@ if err != nil {
 }
 ```
 
-### Version Creation with multiple Formats
+### Creating Version objects with multiple Formats
 
 The following example shows how to create a Version object with multiple formats.
 In this case, the format that matches the version string will be used.
@@ -157,6 +157,24 @@ case 0:
 case 1:
     fmt.Println("verA is newer than verB")
 }
+```
+
+#### Additional Helper functions
+
+```go
+verA, _ := calver.Parse("<YYYY>-<MM>-<DD>", "2025-07-14")
+verB, _ := calver.Parse("<YYYY>-<MM>-<DD>", "2025-07-15")
+
+// Check equality
+fmt.Println(verA.Equal(verB))        // false
+
+// Check ordering
+fmt.Println(verA.LessThan(verB))     // true
+fmt.Println(verA.GreaterThan(verB))  // false
+
+// Check inclusive ordering
+fmt.Println(verA.LessThanOrEqual(verB))     // true
+fmt.Println(verA.GreaterThanOrEqual(verB))   // false
 ```
 
 ### Working with Collections
