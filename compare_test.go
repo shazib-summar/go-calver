@@ -155,3 +155,232 @@ func TestCompare(t *testing.T) {
 		})
 	}
 }
+
+func TestEqual(t *testing.T) {
+	tests := []struct {
+		name    string
+		format  string
+		version string
+		other   string
+		want    bool
+	}{
+		{
+			name:    "1",
+			format:  "<YYYY>-R<DD>",
+			version: "2025-R1",
+			other:   "2025-R2",
+			want:    false,
+		},
+		{
+			name:    "2",
+			format:  "<YYYY>-R<DD>",
+			version: "2022-R1",
+			other:   "2025-R1",
+			want:    false,
+		},
+		{
+			name:    "3",
+			format:  "<YYYY>-R<DD>",
+			version: "2025-R1",
+			other:   "2015-R1",
+			want:    false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ver, err := calver.Parse(tt.format, tt.version)
+			assert.NoError(t, err)
+			other, err := calver.Parse(tt.format, tt.other)
+			assert.NoError(t, err)
+			got := ver.Equal(other)
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}
+
+func TestLessThan(t *testing.T) {
+	tests := []struct {
+		name    string
+		format  string
+		version string
+		other   string
+		want    bool
+	}{
+		{
+			name:    "1",
+			format:  "<YYYY>-R<DD>",
+			version: "2025-R1",
+			other:   "2025-R2",
+			want:    true,
+		},
+		{
+			name:    "2",
+			format:  "<YYYY>-R<DD>",
+			version: "2022-R1",
+			other:   "2025-R1",
+			want:    true,
+		},
+		{
+			name:    "3",
+			format:  "<YYYY>-R<DD>",
+			version: "2025-R1",
+			other:   "2015-R1",
+			want:    false,
+		},
+		{
+			name:    "4",
+			format:  "<YYYY>-R<DD>",
+			version: "2025-R1",
+			other:   "2025-R1",
+			want:    false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ver, err := calver.Parse(tt.format, tt.version)
+			assert.NoError(t, err)
+			other, err := calver.Parse(tt.format, tt.other)
+			assert.NoError(t, err)
+			got := ver.LessThan(other)
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}
+
+func TestGreaterThan(t *testing.T) {
+	tests := []struct {
+		name    string
+		format  string
+		version string
+		other   string
+		want    bool
+	}{
+		{
+			name:    "1",
+			format:  "<YYYY>-R<DD>",
+			version: "2025-R1",
+			other:   "2025-R2",
+			want:    false,
+		},
+		{
+			name:    "2",
+			format:  "<YYYY>-R<DD>",
+			version: "2025-R0",
+			other:   "2025-R1",
+			want:    false,
+		},
+		{
+			name:    "3",
+			format:  "<YYYY>-R<DD>",
+			version: "2025-R1",
+			other:   "2015-R1",
+			want:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ver, err := calver.Parse(tt.format, tt.version)
+			assert.NoError(t, err)
+			other, err := calver.Parse(tt.format, tt.other)
+			assert.NoError(t, err)
+			got := ver.GreaterThan(other)
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}
+
+func TestLessThanOrEqual(t *testing.T) {
+	tests := []struct {
+		name    string
+		format  string
+		version string
+		other   string
+		want    bool
+	}{
+		{
+			name:    "1",
+			format:  "<YYYY>-R<DD>",
+			version: "2025-R1",
+			other:   "2025-R2",
+			want:    true,
+		},
+		{
+			name:    "2",
+			format:  "<YYYY>-R<DD>",
+			version: "2025-R1",
+			other:   "2025-R1",
+			want:    true,
+		},
+		{
+			name:    "3",
+			format:  "<YYYY>-R<DD>",
+			version: "2025-R1",
+			other:   "2015-R1",
+			want:    false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ver, err := calver.Parse(tt.format, tt.version)
+			assert.NoError(t, err)
+			other, err := calver.Parse(tt.format, tt.other)
+			assert.NoError(t, err)
+			got := ver.LessThanOrEqual(other)
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}
+
+func TestGreaterThanOrEqual(t *testing.T) {
+	tests := []struct {
+		name    string
+		format  string
+		version string
+		other   string
+		want    bool
+	}{
+		{
+			name:    "1",
+			format:  "<YYYY>-R<DD>",
+			version: "2025-R1",
+			other:   "2025-R2",
+			want:    false,
+		},
+		{
+			name:    "2",
+			format:  "<YYYY>-R<DD>",
+			version: "2025-R1",
+			other:   "2025-R1",
+			want:    true,
+		},
+		{
+			name:    "3",
+			format:  "<YYYY>-R<DD>",
+			version: "2025-R1",
+			other:   "2015-R1",
+			want:    true,
+		},
+		{
+			name:    "4",
+			format:  "<YYYY>-R<DD>",
+			version: "2025-R1",
+			other:   "2025-R2",
+			want:    false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ver, err := calver.Parse(tt.format, tt.version)
+			assert.NoError(t, err)
+			other, err := calver.Parse(tt.format, tt.other)
+			assert.NoError(t, err)
+			got := ver.GreaterThanOrEqual(other)
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}

@@ -48,6 +48,88 @@ func (c *Version) Compare(v *Version) int {
 	return 0
 }
 
+// Equal reports whether the version is equal to the other version.
+// Example:
+//
+//	ver1, err := calver.Parse("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-14")
+//	if err != nil {
+//	    return err
+//	}
+//	ver2, err := calver.Parse("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-15")
+//	if err != nil {
+//	    return err
+//	}
+//	fmt.Printf("%t\n", ver1.Equal(ver2)) // false
+func (c *Version) Equal(v *Version) bool {
+	return c.Compare(v) == 0
+}
+
+// LessThan reports whether the version is less than the other version.
+// Example:
+//
+//	ver1, err := calver.Parse("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-14")
+//	if err != nil {
+//	    return err
+//	}
+//	ver2, err := calver.Parse("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-15")
+//	if err != nil {
+//	    return err
+//	}
+//	fmt.Printf("%t\n", ver1.LessThan(ver2)) // true
+func (c *Version) LessThan(v *Version) bool {
+	return c.Compare(v) < 0
+}
+
+// GreaterThan reports whether the version is greater than the other version.
+// Example:
+//
+//	ver1, err := calver.Parse("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-14")
+//	if err != nil {
+//	    return err
+//	}
+//	ver2, err := calver.Parse("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-15")
+//	if err != nil {
+//	    return err
+//	}
+//	fmt.Printf("%t\n", ver1.GreaterThan(ver2)) // false
+func (c *Version) GreaterThan(v *Version) bool {
+	return c.Compare(v) > 0
+}
+
+// LessThanOrEqual reports whether the version is less than or equal to the
+// other version.
+// Example:
+//
+//	ver1, err := calver.Parse("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-14")
+//	if err != nil {
+//	    return err
+//	}
+//	ver2, err := calver.Parse("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-15")
+//	if err != nil {
+//	    return err
+//	}
+//	fmt.Printf("%t\n", ver1.LessThanOrEqual(ver2)) // true
+func (c *Version) LessThanOrEqual(v *Version) bool {
+	return c.Compare(v) <= 0
+}
+
+// GreaterThanOrEqual reports whether the version is greater than or equal to
+// the other version.
+// Example:
+//
+//	ver1, err := calver.Parse("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-14")
+//	if err != nil {
+//	    return err
+//	}
+//	ver2, err := calver.Parse("Rel-<YYYY>-<0M>-<0D>", "Rel-2025-07-15")
+//	if err != nil {
+//	    return err
+//	}
+//	fmt.Printf("%t\n", ver1.GreaterThanOrEqual(ver2)) // false
+func (c *Version) GreaterThanOrEqual(v *Version) bool {
+	return c.Compare(v) >= 0
+}
+
 // compareStringInt compares two string integers as integers. It handles the
 // case where one or both of the strings are empty. If the integer in the first
 // string is larger it returns 1, if the integer in the second string is larger
